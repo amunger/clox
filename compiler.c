@@ -3,6 +3,7 @@
 
 #include "common.h"
 #include "compiler.h"
+#include "chunk.h"
 #include "debug.h"
 #include "scanner.h"
 #include "value.h"
@@ -129,7 +130,7 @@ static void emitReturn()
 static uint8_t makeConstant(Value value)
 {
     int constant = addConstant(currentChunk(), value);
-    if (constant > UINT8_MAX)
+    if (constant > (int)UINT8_MAX)
     {
         error("Too many constants in one chunk.");
         return 0;
@@ -175,7 +176,7 @@ static void binary()
     case TOKEN_GREATER:
         emitByte(OP_GREATER);
         break;
-    case TOKEN_GREATER_EQUAL:   
+    case TOKEN_GREATER_EQUAL:
         emitBytes(OP_LESS, OP_NOT);
         break;
     case TOKEN_LESS:
@@ -270,7 +271,7 @@ ParseRule rules[] = {
     [TOKEN_EQUAL_EQUAL] = {NULL, binary, PREC_EQUALITY},
     [TOKEN_GREATER] = {NULL, binary, PREC_COMPARISON},
     [TOKEN_GREATER_EQUAL] = {NULL, binary, PREC_COMPARISON},
-    [TOKEN_LESS] = {NULL, binary, PREC_COMPARISON}, 
+    [TOKEN_LESS] = {NULL, binary, PREC_COMPARISON},
     [TOKEN_LESS_EQUAL] = {NULL, binary, PREC_COMPARISON},
     [TOKEN_IDENTIFIER] = {NULL, NULL, PREC_NONE},
     [TOKEN_NUMBER] = {number, NULL, PREC_NONE},
